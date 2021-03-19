@@ -11,10 +11,8 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        welcomeData()
         return true
     }
 
@@ -76,6 +74,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    fileprivate func welcomeData() {
+        let demoNote = NSEntityDescription.insertNewObject(forEntityName: "Notes", into: context) as! Notes
+        let defaults = UserDefaults.standard
+        let isPreloaded = defaults.bool(forKey: "isPreloaded")
+        if !isPreloaded {
+         
+            demoNote.titleNote = "Добро пожаловать"
+            demoNote.contentNote = "Привет, это приветственная заметка!"
+            
+            do {
+                try context.save()
+               }
+            catch {
+                print("Saving Core Data Failed: \(error)")
+            }
+            
+            defaults.setValue(true, forKey: "isPreloaded")
+        }
+    }
+    
 
 }
 
+let appDelegate = UIApplication.shared.delegate as! AppDelegate
+let context = appDelegate.persistentContainer.viewContext
